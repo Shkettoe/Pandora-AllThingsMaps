@@ -1,0 +1,35 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Pandora.App"
+             RequestedThemeVariant="Dark">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="DefaultTextColour">#3c3c3c</SolidColorBrush>
+                    <SolidColorBrush x:Key="DefaultBackgroundColour">#fafafa</SolidColorBrush>
+                    <SolidColorBrush x:Key="SidebarBackgroundColour">#f0f0f0</SolidColorBrush>
+                    <SolidColorBrush x:Key="AccentBackgroundColour">#e8e8e8</SolidColorBrush>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                	<SolidColorBrush x:Key="DefaultTextColour">#f7fafc</SolidColorBrush>
+                	<SolidColorBrush x:Key="DefaultBackgroundColour">#2d3748</SolidColorBrush>
+                	<SolidColorBrush x:Key="SidebarBackgroundColour">#1a202c</SolidColorBrush>
+                    <LinearGradientBrush x:Key="SidebarBackgroundGradient" StartPoint="0%, 0%" EndPoint="100%, 0%">
+                        <GradientStop Offset="0" Color="#2d3748"></GradientStop>
+                        <GradientStop Offset="1" Color="#1a202c"></GradientStop>
+                    </LinearGradientBrush>
+                	<SolidColorBrush x:Key="AccentBackgroundColour">#4a5568</SolidColorBrush>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <StyleInclude Source="Styles/AppDefaultStyles.axaml"></StyleInclude>
+    </Application.Styles>
+</Application>
