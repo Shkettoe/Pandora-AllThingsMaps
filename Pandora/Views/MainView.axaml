@@ -7,17 +7,18 @@
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="600"
              x:Class="Pandora.Views.MainView"
              x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
 
-	<Grid ColumnDefinitions="Auto, *">
-		<v:SidebarView Grid.Column="0" 
-		               DataContext="{Binding SidebarViewModel}"/>
-		<Panel Grid.Column="1">
-			<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-		</Panel>
-	</Grid>
+    <Grid ColumnDefinitions="Auto, *">
+        <v:SidebarView Grid.Column="0"
+                       DataContext="{Binding SidebarViewModel}" />
+        <Panel Grid.Column="1">
+            <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <ContentControl Content="{Binding SidebarViewModel.SelectedViewModel}"/>
+        </Panel>
+    </Grid>
 </UserControl>

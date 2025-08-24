@@ -1,27 +1,37 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <Design.PreviewWith>
-	  <Border Width="1000">
-		  <!-- Add Controls for Previewer Here -->
-		  <Button Width="500">Hello world</Button>
-	  </Border>
-  </Design.PreviewWith>
+    <Design.PreviewWith>
+        <Border Width="1000">
+            <!-- Add Controls for Previewer Here -->
+            <Button Classes="active" Width="500">Hello world</Button>
+        </Border>
+    </Design.PreviewWith>
 
-  <!-- Add Styles Here -->
-  <Style Selector="TextBlock">
-	  <Setter Property="Foreground" Value="{DynamicResource DefaultTextColour}" />
-  </Style>
-  
-  <Style Selector="Button">
-	  <Setter Property="FontSize" Value="20"></Setter>
-	  <Setter Property="Background" Value="{DynamicResource AccentBackgroundColour}"></Setter>
-	  <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-	  <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
-	  <Setter Property="Padding" Value="12"></Setter>
-	  <Setter Property="Foreground" Value="{DynamicResource DefaultTextColour}"></Setter>
-  </Style>
-  <Style Selector="Window">
-	  <Setter Property="Background" Value="{DynamicResource DefaultBackgroundColour}"></Setter>
-	  <Setter Property="Foreground" Value="{DynamicResource DefaultTextColour}"></Setter>
-  </Style>
+    <!-- Add Styles Here -->
+    <Style Selector="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTextColour}" />
+    </Style>
+
+    <Style Selector="Button">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Background" Value="{DynamicResource AccentBackgroundColour}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTextColour}" />
+    </Style>
+    <Style Selector="Button.active">
+        <Setter Property="Background" Value="{DynamicResource ActiveBackgroundColour}" />
+    </Style>
+    <Style Selector="Window">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundColour}" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTextColour}" />
+    </Style>
+    <Style Selector="Border.sidebar">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Width" Duration="0:0:0:0.1"></DoubleTransition>
+            </Transitions>
+        </Setter>
+    </Style>
 </Styles>

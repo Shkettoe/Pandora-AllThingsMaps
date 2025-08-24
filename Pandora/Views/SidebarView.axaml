@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:FluentIcons.Avalonia"
              xmlns:vm="clr-namespace:Pandora.ViewModels"
+             xmlns:conv="clr-namespace:Pandora.Converters"
              mc:Ignorable="d" d:DesignHeight="720"
              x:Class="Pandora.Views.SidebarView">
 
@@ -11,17 +12,25 @@
         <vm:SidebarViewModel />
     </Design.DataContext>
 
-    <Border Background="{DynamicResource SidebarBackgroundGradient}" Width="{Binding SideBarWidth}">
+    <UserControl.Resources>
+        <conv:ActiveButtonConverter x:Key="ActiveButtonConverter" />
+    </UserControl.Resources>
+
+    <Border Classes="sidebar" Background="{DynamicResource SidebarBackgroundGradient}"
+            Width="{Binding SideBarWidth}">
         <Grid RowDefinitions="*, Auto">
             <StackPanel>
-                <TextBlock FontSize="48" FontWeight="Bold" Margin="0 24" HorizontalAlignment="Center" Text="{Binding Pandora}" />
-                <Button Height="48">
+                <TextBlock FontSize="48" FontWeight="Bold" Margin="0 24" HorizontalAlignment="Center"
+                           Text="{Binding Pandora}" />
+                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="Home" 
+                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=Home}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Home" IconVariant="Regular" />
                         <TextBlock Text="Home" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
                     </StackPanel>
                 </Button>
-                <Button Height="48">
+                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="About"
+                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=About}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Info" IconVariant="Regular" />
                         <TextBlock Text="About" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
@@ -32,12 +41,14 @@
                 <Button Command="{Binding ResizeSidebarCommand}" Width="40" Height="40" HorizontalAlignment="Right">
                     <ic:FluentIcon Icon="{Binding HamburgerIcon}" IconVariant="Regular" />
                 </Button>
-                <Button HorizontalAlignment="Left">
+                <Button HorizontalAlignment="Left" Command="{Binding GoToCommand}" CommandParameter="Settings"
+                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=Settings}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Settings" IconVariant="Regular" />
+                        <TextBlock Text="Settings" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
                     </StackPanel>
                 </Button>
-           </StackPanel>
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
