@@ -17,8 +17,14 @@
         <v:SidebarView Grid.Column="0"
                        DataContext="{Binding SidebarViewModel}" />
         <Panel Grid.Column="1">
+            <!--
             <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             <ContentControl Content="{Binding SidebarViewModel.SelectedViewModel}"/>
+        -->
+            <!--<Canvas Background="#55aaee" Width="600" Height="400">
+                
+            </Canvas>-->
+            <v:MapTestView DataContext="{Binding MapTestViewModel}"/>
         </Panel>
     </Grid>
 </UserControl>

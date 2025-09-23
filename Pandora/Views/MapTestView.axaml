@@ -1,0 +1,57 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Pandora.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Pandora.Views.MapTestView"
+             x:DataType="vm:MapTestViewModel">
+    <Design.DataContext>
+        <vm:MapTestViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="Auto, *">
+    
+        <!-- Controls -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="20">
+            <Button Content="Load France" Command="{Binding LoadCountryCommand}" CommandParameter="France" />
+            <Button Content="Test Yugoslavia" Command="{Binding LoadCountryCommand}" CommandParameter="Yugoslavia" />
+            <Button Content="Load Germany" Command="{Binding LoadCountryCommand}" CommandParameter="Germany" />
+            <Button Content="Load Slovakia" Command="{Binding LoadCountryCommand}" CommandParameter="Slovakia" />
+            <TextBlock Text="{Binding Status}" VerticalAlignment="Center" Margin="10,0" />
+            <ProgressBar IsIndeterminate="{Binding IsLoading}" 
+                         IsVisible="{Binding IsLoading}"
+                         Width="100" Height="20" />
+        </StackPanel>
+    
+        <!-- Map Canvas -->
+        <!-- Canvas for drawing -->
+        <Canvas Grid.Row="1" Name="MapCanvas" Background="White" 
+                Width="{Binding CanvasWidth}" 
+                Height="{Binding CanvasHeight}">
+            
+            <!-- Default message when no country is loaded -->
+            <TextBlock Text="Click a button above to load a country" 
+                       Canvas.Left="50" Canvas.Top="100" 
+                       FontSize="16" Foreground="Gray"
+                       IsVisible="{Binding SelectedCountry, Converter={x:Static ObjectConverters.IsNull}}" />
+            
+            <!-- Country Polygon -->
+            <Path Fill="LightGreen" 
+                  Stroke="Red" 
+                  StrokeThickness="2"
+                  Data="{Binding CountryPathData}"
+                  IsVisible="{Binding SelectedCountry, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            
+            <!-- Country info overlay -->
+            <!--<StackPanel Canvas.Left="10" Canvas.Top="10" 
+                        Background="#AA000000" 
+                        IsVisible="{Binding SelectedCountry, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <TextBlock Text="{Binding SelectedCountry.Name, StringFormat='Country: {0}'}"
+                           FontWeight="Bold" FontSize="16" Foreground="White" Margin="10" />
+                <TextBlock Text="{Binding SelectedCountry.Iso3Code, StringFormat='ISO Code: {0}'}"
+                           FontSize="12" Foreground="LightGray" Margin="10,0,10,10" />
+            </StackPanel>-->
+            
+        </Canvas>
+    </Grid>
+</UserControl>
