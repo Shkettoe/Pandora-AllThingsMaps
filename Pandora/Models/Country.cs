@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using NetTopologySuite.Geometries;
 
 namespace Pandora.Models;
@@ -10,72 +10,63 @@ public class Country
     public string Name { get; set; } = "";
     public string Iso3Code { get; set; } = "";
     public Geometry Geometry { get; init; } = null!;
-    public double[]? BoundingBox { get; set; }
-    
-    // Helper method to get simple coordinate array for rendering
-    public Point[][] GetPolygonCoordinates()
+
+    // Get simple coordinate points for Polygon binding
+    public ObservableCollection<Avalonia.Point> GetPolygonPoints(double canvasWidth = 100, double canvasHeight = 400)
     {
-        return Geometry switch
+        var points = new ObservableCollection<Avalonia.Point>();
+
+        // Certain countries are single Polygons as they only encompass single piece of land. Other countries are multi-polygons if they feature - besides the mainlands, some islands or territories overseas.
+        switch (Geometry)
         {
-            Polygon polygon => [polygon.ExteriorRing.Coordinates.Select(c => new Point(c.X, c.Y)).ToArray()],
-            MultiPolygon multiPolygon => multiPolygon.Geometries.Cast<Polygon>()
-                .Select(p => p.ExteriorRing.Coordinates.Select(c => new Point(c.X, c.Y)).ToArray())
-                .ToArray(),
-            _ => []
-        };
-    }
-    
-    // Get bounding box for centering/scaling
-    public (double MinX, double MinY, double MaxX, double MaxY) GetBounds()
-    {
-        var envelope = Geometry.EnvelopeInternal;
-        return (envelope.MinX, envelope.MinY, envelope.MaxX, envelope.MaxY);
-    }
-    
-    // Convert to Avalonia PathGeometry string
-    public string ToPathGeometryString(double scaleX = 1.0, double scaleY = 1.0, double offsetX = 0, double offsetY = 0)
-    {
-        var pathBuilder = new StringBuilder();
-        
-        if (Geometry is Polygon polygon)
-        {
-            AppendPolygonToPath(polygon, pathBuilder, scaleX, scaleY, offsetX, offsetY);
-        }
-        else if (Geometry is MultiPolygon multiPolygon)
-        {
-            foreach (var geometry in multiPolygon.Geometries)
+            case Polygon polygon:
+                AddPolygonPoints(polygon, points, canvasWidth, canvasHeight);
+                break;
+            case MultiPolygon multiPolygon when multiPolygon.Geometries.Length > 0:
             {
-                var poly = (Polygon)geometry;
-                AppendPolygonToPath(poly, pathBuilder, scaleX, scaleY, offsetX, offsetY);
+                // TODO: check dynamically for other polygons that are big enough and close enough to be significant and render them too. E.g. - Sicily for Italy. False positive e.g. - Greenland for Denmark (pointless to render) 
+                var largestPolygon = multiPolygon.Geometries
+                    .Cast<Polygon>()
+                    .OrderByDescending(p => p.Area)
+                    .First();
+                AddPolygonPoints(largestPolygon, points, canvasWidth, canvasHeight);
+                break;
             }
         }
-        
-        return pathBuilder.ToString();
+
+        return points;
     }
-    
-    private void AppendPolygonToPath(Polygon polygon, StringBuilder pathBuilder, double scaleX, double scaleY, double offsetX, double offsetY)
+
+    private static void AddPolygonPoints(Polygon polygon, ObservableCollection<Avalonia.Point> points, double canvasWidth, double canvasHeight)
     {
         var coordinates = polygon.ExteriorRing.Coordinates;
         if (coordinates.Length == 0) return;
-        
-        // Move to first point
-        var firstPoint = coordinates[0];
-        pathBuilder.Append($"M {(firstPoint.X * scaleX + offsetX):F2},{(-firstPoint.Y * scaleY + offsetY):F2} ");
-        
-        // Line to subsequent points
-        for (var i = 1; i < coordinates.Length; i++)
-        {
-            var point = coordinates[i];
-            pathBuilder.Append($"L {(point.X * scaleX + offsetX):F2},{(-point.Y * scaleY + offsetY):F2} ");
-        }
-        
-        // Close the path
-        pathBuilder.Append("Z ");
-    }
-}
 
-public class Point(double x, double y)
-{
-    public double X { get; set; } = x;
-    public double Y { get; set; } = y;
+        // Calculate bounds for scaling
+        var minX = coordinates.Min(c => c.X);
+        var maxX = coordinates.Max(c => c.X);
+        var minY = coordinates.Min(c => c.Y);
+        var maxY = coordinates.Max(c => c.Y);
+
+        var width = maxX - minX;
+        var height = maxY - minY;
+
+        // Calculate scale to fit canvas with padding
+        var padding = 50;
+        var scaleX = (canvasWidth - padding * 2) / width;
+        var scaleY = (canvasHeight - padding * 2) / height;
+        var scale = Math.Min(scaleX, scaleY); // Keep aspect ratio
+
+        // Calculate offset to center the polygon
+        var offsetX = (canvasWidth - width * scale) / 2 - minX * scale;
+        var offsetY = (canvasHeight - height * scale) / 2 - minY * scale;
+
+        // Convert coordinates to Avalonia Points
+        foreach (var coord in coordinates)
+        {
+            var x = coord.X * scale + offsetX;
+            var y = canvasHeight - (coord.Y * scale + offsetY); // Flip Y axis for screen coordinates
+            points.Add(new Avalonia.Point(x, y));
+        }
+    }
 }
