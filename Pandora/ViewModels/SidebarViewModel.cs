@@ -23,6 +23,7 @@ public partial class SidebarViewModel : ViewModelBase
 
     private readonly HomeViewModel _homeViewModel = new();
     private readonly AboutViewModel _aboutViewModel = new();
+    private readonly MapTestViewModel _mapTestViewModel = new();
     private readonly SettingsViewModel _settingsViewModel = new();
 
     public SidebarViewModel()
@@ -43,6 +44,7 @@ public partial class SidebarViewModel : ViewModelBase
         {
             "Home" => _homeViewModel,
             "About" => _aboutViewModel,
+            "MapTest" => _mapTestViewModel,
             "Settings" => _settingsViewModel,
             _ => _homeViewModel
         };
@@ -53,6 +55,7 @@ public partial class SidebarViewModel : ViewModelBase
     {
         HomeViewModel => "Home",
         AboutViewModel => "About",
+        MapTestViewModel => "MapTest",
         SettingsViewModel => "Settings",
         _ => "Home"
     };

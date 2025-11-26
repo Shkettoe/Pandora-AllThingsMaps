@@ -26,15 +26,15 @@ public class GeoDataService
     {
         var countries =  await LoadCountries();
         
-        var feature = countries.FirstOrDefault(f => f.Attributes["NAME"]?.ToString()?.Equals(name, StringComparison.OrdinalIgnoreCase) == true);
+        var country = countries.FirstOrDefault(f => f.Attributes["NAME"]?.ToString()?.Equals(name, StringComparison.OrdinalIgnoreCase) == true);
 
-        if (feature == null) return null;
+        if (country == null) return null;
 
         return new Country
         {
-            Name = feature.Attributes["NAME"]?.ToString() ?? "",
-            Iso3Code = feature.Attributes["ISO_A3"]?.ToString() ?? "",
-            Geometry = feature.Geometry
+            Name = country.Attributes["NAME"]?.ToString() ?? "",
+            Iso3Code = country.Attributes["ISO_A3"]?.ToString() ?? "",
+            Geometry = country.Geometry
         };
     }
 

@@ -20,6 +20,7 @@ public class Country
         switch (Geometry)
         {
             case Polygon polygon:
+                // This will add points to the points var that's being passed, hence why it's a void
                 AddPolygonPoints(polygon, points, canvasWidth, canvasHeight);
                 break;
             case MultiPolygon multiPolygon when multiPolygon.Geometries.Length > 0:
@@ -52,7 +53,7 @@ public class Country
         var height = maxY - minY;
 
         // Calculate scale to fit canvas with padding
-        var padding = 50;
+        const int padding = 50;
         var scaleX = (canvasWidth - padding * 2) / width;
         var scaleY = (canvasHeight - padding * 2) / height;
         var scale = Math.Min(scaleX, scaleY); // Keep aspect ratio

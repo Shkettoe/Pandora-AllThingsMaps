@@ -21,9 +21,6 @@ public partial class MapTestViewModel : ViewModelBase
     private Country? _selectedCountry;
 
     [ObservableProperty]
-    private string _status = "Ready to load country data...";
-
-    [ObservableProperty]
     private bool _isLoading;
 
     // Properties for rendering
@@ -40,7 +37,6 @@ public partial class MapTestViewModel : ViewModelBase
     private async Task LoadCountry(string countryName)
     {
         IsLoading = true;
-        Status = $"Loading {countryName}...";
         CountryPoints.Clear(); // Clear previous points
 
         try
@@ -49,8 +45,6 @@ public partial class MapTestViewModel : ViewModelBase
 
             if (SelectedCountry != null)
             {
-                Status = $"Loaded {SelectedCountry.Name} ({SelectedCountry.Iso3Code})";
-
                 // Get polygon points scaled to canvas
                 var points = SelectedCountry.GetPolygonPoints(CanvasWidth, CanvasHeight);
 
@@ -67,15 +61,10 @@ public partial class MapTestViewModel : ViewModelBase
                     Console.WriteLine($"First point: {CountryPoints[0]}, Last point: {CountryPoints[^1]}");
                 }
             }
-            else
-            {
-                Status = $"Country '{countryName}' not found";
-            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-            Status = $"Error loading {countryName}: {ex.Message}";
         }
         finally
         {
