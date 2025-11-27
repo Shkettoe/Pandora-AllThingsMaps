@@ -15,6 +15,8 @@ public class ActiveButtonConverter : IValueConverter
             {
                 "home" => selectedViewModel is HomeViewModel,
                 "about" => selectedViewModel is AboutViewModel,
+                "maptest" => selectedViewModel is MapTestViewModel,
+                "multiplecountries" => selectedViewModel is MultipleCountriesViewModel,
                 "settings" => selectedViewModel is SettingsViewModel,
                 _ => false
             };

@@ -14,12 +14,9 @@
         <!-- Controls -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="20">
             <Button Content="Load France" Command="{Binding LoadCountryCommand}" CommandParameter="France" />
-            <Button Content="Load Germany" Command="{Binding LoadCountryCommand}" CommandParameter="Germany" />
             <Button Content="Load Italy" Command="{Binding LoadCountryCommand}" CommandParameter="Italy" />
-            <Button Content="Load United Kingdom" Command="{Binding LoadCountryCommand}" CommandParameter="United Kingdom" />
-            <Button Content="Load Japan" Command="{Binding LoadCountryCommand}" CommandParameter="Japan" />
-            <Button Content="Load Slovakia" Command="{Binding LoadCountryCommand}" CommandParameter="Slovakia" />
-            <TextBlock Text="{Binding Status}" VerticalAlignment="Center" Margin="10,0" />
+            <Button Content="Load Serbia" Command="{Binding LoadCountryCommand}" CommandParameter="Serbia" />
+            <Button Content="Load Kosovo" Command="{Binding LoadCountryCommand}" CommandParameter="Kosovo" />
             <ProgressBar IsIndeterminate="{Binding IsLoading}" 
                          IsVisible="{Binding IsLoading}"
                          Width="100" Height="20" />

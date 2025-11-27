@@ -37,10 +37,17 @@
                     </StackPanel>
                 </Button>
                 <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="MapTest"
-                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=About}">
+                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=MapTest}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Map" IconVariant="Regular" />
                         <TextBlock Text="Country" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
+                    </StackPanel>
+                </Button>
+                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="MultipleCountries"
+                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=MultipleCountries}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ic:FluentIcon Icon="Map" IconVariant="Regular" />
+                        <TextBlock Text="Countries" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
                     </StackPanel>
                 </Button>
             </StackPanel>

@@ -21,7 +21,10 @@ public class Country
         {
             case Polygon polygon:
                 // This will add points to the points var that's being passed, hence why it's a void
-                AddPolygonPoints(polygon, points, canvasWidth, canvasHeight);
+                foreach (var coord in polygon.ExteriorRing.Coordinates )
+                {
+                    points.Add(new Avalonia.Point(coord.X, coord.Y));
+                }
                 break;
             case MultiPolygon multiPolygon when multiPolygon.Geometries.Length > 0:
             {
@@ -30,7 +33,10 @@ public class Country
                     .Cast<Polygon>()
                     .OrderByDescending(p => p.Area)
                     .First();
-                AddPolygonPoints(largestPolygon, points, canvasWidth, canvasHeight);
+                foreach (var coord in largestPolygon.ExteriorRing.Coordinates)
+                {
+                    points.Add(new Avalonia.Point(coord.X, coord.Y));
+                }
                 break;
             }
         }
@@ -38,12 +44,15 @@ public class Country
         return points;
     }
 
+    /**
+     * @deprecated
+     */
     private static void AddPolygonPoints(Polygon polygon, ObservableCollection<Avalonia.Point> points, double canvasWidth, double canvasHeight)
     {
         var coordinates = polygon.ExteriorRing.Coordinates;
         if (coordinates.Length == 0) return;
 
-        // Calculate bounds for scaling
+        // Calculate bounds for scaling - perhaps you don't want to do this here
         var minX = coordinates.Min(c => c.X);
         var maxX = coordinates.Max(c => c.X);
         var minY = coordinates.Min(c => c.Y);

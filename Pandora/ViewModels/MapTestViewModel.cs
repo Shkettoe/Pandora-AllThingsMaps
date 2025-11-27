@@ -26,7 +26,7 @@ public partial class MapTestViewModel : ViewModelBase
     // Properties for rendering
     [ObservableProperty]
     private ObservableCollection<Avalonia.Point> _countryPoints = [];
-
+    
     [ObservableProperty]
     private double _canvasWidth = 600;
 
