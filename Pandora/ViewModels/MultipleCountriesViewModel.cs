@@ -19,18 +19,39 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 
     private readonly List<Country> _selectedCountries = [];
 
-    [ObservableProperty] private string _countryName = "";
+    [ObservableProperty] private string _countryName = string.Empty;
 
     [ObservableProperty] private ObservableCollection<Polygon> _countryPolygons = [];
-    
+
     [ObservableProperty] private int _canvasWidth = 1000;
     [ObservableProperty] private int _canvasHeight = 600;
+    [ObservableProperty] private double _scale = 10;
+    [ObservableProperty] private double _offsetX;
+    [ObservableProperty] private double _offsetY;
 
     public MultipleCountriesViewModel()
     {
-        var points = new ObservableCollection<Point>([new Point(x: 1, y:1), new Point(x:900, y:500), new Point(x: 900, y: 1)]);
-        var polygon = new Polygon { Points = points, Fill = Brushes.LightBlue, Stroke = Brushes.Black, StrokeThickness = 1};
-        CountryPolygons.Add(polygon);
+        CountryName = "France";
+        _ = ToggleCountry();
+        CountryName = "Germany";
+        _ = ToggleCountry();
+        CountryName = "Italy";
+        _ = ToggleCountry();
+    }
+
+    [RelayCommand]
+    private Task ChangeScale(string direction)
+    {
+        Scale += double.Parse(direction);
+        ResetPositions();
+        return Task.CompletedTask;
+    }
+
+    public void PanCanvas(double deltaX, double deltaY)
+    {
+        OffsetX += deltaX;
+        OffsetY += deltaY;
+        ResetPositions();
     }
 
     [RelayCommand]
@@ -38,65 +59,56 @@ public partial class MultipleCountriesViewModel : ViewModelBase
     {
         try
         {
-            if (!_selectedCountries.Exists(c => c.Name.Equals(CountryName)))
+            if (!_selectedCountries.Exists(c => c.Name.Equals(CountryName, StringComparison.OrdinalIgnoreCase)))
             {
-                Console.WriteLine($"Trying to get a country with the name {CountryName}");
                 var country = await _geoDataService.GetCountry(CountryName);
                 if (country != null) _selectedCountries.Add(country);
             }
             else
             {
-                _selectedCountries.Remove(_selectedCountries.Find(c => c.Name.Equals(CountryName)) ??
-                                          throw new InvalidOperationException());
+                var countryToRemove = _selectedCountries.Find(c => c.Name.Equals(CountryName, StringComparison.OrdinalIgnoreCase));
+                if (countryToRemove != null)
+                {
+                    _selectedCountries.Remove(countryToRemove);
+                }
             }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
-        finally{ResetCanvas();}
+        finally
+        {
+            RerenderCanvas();
+        }
     }
 
-    private void ResetCanvas()
+    public void RerenderCanvas()
     {
         CountryPolygons.Clear();
-        CountryName = string.Empty;
-
-        // bounds for scaling
-        var allPoints = _selectedCountries.SelectMany(sc => sc.GetPolygonPoints()).ToList();
-        var minX = allPoints.Min(p => p.X);
-        var minY = allPoints.Min(p => p.Y);
-        var maxX = allPoints.Max(p => p.X);
-        var maxY = allPoints.Max(p => p.Y);
-
-        var width = maxX - minX;
-        var height = maxY - minY;
-
-        const int padding = 50;
-        var scaleX = (CanvasWidth - padding * 2) / width;
-        var scaleY = (CanvasHeight - padding * 2) / height;
-        var scale = Math.Min(scaleX, scaleY); // Keep aspect ratio
 
         // Calculate offset to center the polygon
-        var offsetX = (CanvasWidth - width * scale) / 2 - minX * scale;
-        var offsetY = (CanvasHeight - height * scale) / 2 - minY * scale;
-
-        ObservableCollection<Polygon> polygons = [];
-        foreach (var sc in _selectedCountries)
+        foreach (var points in _selectedCountries.Select(sc => new List<Point>(from coord in sc.GetPolygonPoints()
+                     let x = coord.X * Scale + OffsetX
+                     let y = CanvasHeight - (coord.Y * Scale + OffsetY)
+                     select new Point(x, y))))
         {
-            List<Point> points = [];
-            foreach (var coord in sc.GetPolygonPoints())
-            {
-                var x = coord.X * scale + offsetX;
-                var y = CanvasHeight - (coord.Y * scale + offsetY); // Flip Y axis for screen coordinates
-                if(x > CanvasWidth || y > CanvasHeight || x <  0 || y < 0) Console.WriteLine($"{x}, {y}");
-                points.Add(new Point(x, y));
-            }
-
-            var polygon = new Polygon
-                { Points = points, Fill = Brushes.LightBlue, Stroke = Brushes.Black, StrokeThickness = 1 };
-            polygons.Add(polygon);
+            CountryPolygons.Add(new Polygon
+                { Points = points, Fill = Brushes.LightBlue, Stroke = Brushes.Black, StrokeThickness = 1 });
         }
-        CountryPolygons = polygons;        
+    }
+
+    public void ResetPositions()
+    {
+        for (var i = 0; i < _selectedCountries.Count; i++)
+        {
+            var points = _selectedCountries[i].GetPolygonPoints()
+                .Select(coord => new Point(
+                    coord.X * Scale + OffsetX,
+                    CanvasHeight - (coord.Y * Scale + OffsetY)))
+                .ToList();
+        
+            CountryPolygons[i].Points = points;
+        }
     }
 }

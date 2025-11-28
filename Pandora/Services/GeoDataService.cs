@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,9 +25,10 @@ public class GeoDataService
 
     public async Task<Country?> GetCountry(string name)
     {
-        var countries =  await LoadCountries();
-        
-        var country = countries.FirstOrDefault(f => f.Attributes["NAME"]?.ToString()?.Equals(name, StringComparison.OrdinalIgnoreCase) == true);
+        var countries = await LoadCountries();
+
+        var country = countries.FirstOrDefault(f =>
+            f.Attributes["NAME"]?.ToString()?.Equals(name, StringComparison.OrdinalIgnoreCase) == true);
 
         if (country == null) return null;
 
@@ -36,6 +38,28 @@ public class GeoDataService
             Iso3Code = country.Attributes["ISO_A3"]?.ToString() ?? "",
             Geometry = country.Geometry
         };
+    }
+
+    public async Task<IEnumerable<Country>?> GeoCountriesByContinent(string continent)
+    {
+        var countries = await LoadCountries();
+
+        IEnumerable<IFeature> europeanCountries = countries.Where(c =>
+            c.Attributes["CONTINENT"]?.ToString()?.Equals(continent, StringComparison.OrdinalIgnoreCase) == true);
+
+        List<Country> countriesList = [];
+
+        europeanCountries.ToList().ForEach(c =>
+        {
+            countriesList.Add(new Country
+            {
+                Name = c.Attributes["NAME"]?.ToString() ?? "",
+                Iso3Code = c.Attributes["ISO_A3"]?.ToString() ?? "",
+                Geometry = c.Geometry
+            });
+        });
+
+        return countriesList;
     }
 
     /*     public async Task<FeatureCollection> LoadStatesProvinces()

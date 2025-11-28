@@ -15,8 +15,7 @@
             <Button Command="{Binding ToggleCountryCommand}">Toggle Country</Button>
         </StackPanel>
         <StackPanel Spacing="30">
-            <!-- <Button> Load Countries</Button> -->
-            <Canvas Name="MapCanvas" Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Background="White">
+            <Canvas Name="MapCanvas" Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Background="White" ClipToBounds="True">
                 <ItemsControl Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" ItemsSource="{Binding CountryPolygons}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

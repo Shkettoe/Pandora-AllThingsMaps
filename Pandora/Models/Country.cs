@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NetTopologySuite.Geometries;
@@ -12,7 +13,7 @@ public class Country
     public Geometry Geometry { get; init; } = null!;
 
     // Get simple coordinate points for Polygon binding
-    public ObservableCollection<Avalonia.Point> GetPolygonPoints(double canvasWidth = 100, double canvasHeight = 400)
+    public IReadOnlyList<Avalonia.Point> GetPolygonPoints(double canvasWidth = 100, double canvasHeight = 400)
     {
         var points = new ObservableCollection<Avalonia.Point>();
 
