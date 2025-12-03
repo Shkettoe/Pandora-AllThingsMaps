@@ -6,22 +6,42 @@
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
              x:Class="Pandora.Views.MultipleCountriesView"
              x:DataType="vm:MultipleCountriesViewModel">
-    
-    <Design.DataContext><vm:MultipleCountriesViewModel/></Design.DataContext>
-    
+
+    <Design.DataContext>
+        <vm:MultipleCountriesViewModel />
+    </Design.DataContext>
+
     <StackPanel Margin="50" Orientation="Horizontal" Spacing="20">
         <StackPanel Spacing="20" Width="200">
-            <TextBox Text="{Binding CountryName}"/>
+            <TextBox Text="{Binding CountryName}" />
             <Button Command="{Binding ToggleCountryCommand}">Toggle Country</Button>
+            <TextBlock Text="{Binding CursorLocation.X}" />
+            <TextBlock Text="{Binding CursorLocation.Y}" />
         </StackPanel>
         <StackPanel Spacing="30">
-            <Canvas Name="MapCanvas" Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Background="White" ClipToBounds="True">
-                <ItemsControl Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" ItemsSource="{Binding CountryPolygons}">
+            <Canvas Name="MapCanvas" Background="White" ClipToBounds="True" Width="{Binding CanvasWidth}"
+                    Height="{Binding CanvasHeight}">
+                <ItemsControl Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}"
+                              ItemsSource="{Binding CountryPolygons}">
+                    <ItemsControl.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform
+                                ScaleX="{Binding Zoom.ScaleX}"
+                                ScaleY="{Binding Zoom.ScaleY}">
+                            </ScaleTransform>
+                            <TranslateTransform X="{Binding Pan.X}" Y="{Binding Pan.Y}"></TranslateTransform>
+                        </TransformGroup>
+                    </ItemsControl.RenderTransform>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
+                    <!--     <ItemsControl.ItemTemplate> -->
+                    <!--         <DataTemplate> -->
+                    <!--              -->
+                    <!--         </DataTemplate> -->
+                    <!--     </ItemsControl.ItemTemplate> -->
                 </ItemsControl>
             </Canvas>
         </StackPanel>

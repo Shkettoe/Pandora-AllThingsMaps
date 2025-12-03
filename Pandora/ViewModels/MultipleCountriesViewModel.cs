@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,41 +18,55 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 {
     private readonly GeoDataService _geoDataService = new();
 
+    // [ObservableProperty]
     private readonly List<Country> _selectedCountries = [];
 
     [ObservableProperty] private string _countryName = string.Empty;
-
     [ObservableProperty] private ObservableCollection<Polygon> _countryPolygons = [];
 
     [ObservableProperty] private int _canvasWidth = 1000;
-    [ObservableProperty] private int _canvasHeight = 600;
-    [ObservableProperty] private double _scale = 10;
-    [ObservableProperty] private double _offsetX;
-    [ObservableProperty] private double _offsetY;
+    [ObservableProperty] private int _canvasHeight = 500;
+    [ObservableProperty] private TranslateTransform _pan = new(1.0, 1.0);
+    [ObservableProperty] private ScaleTransform _zoom = new(1.0, 1.0);
+
+    [ObservableProperty] private Point _cursorLocation;
 
     public MultipleCountriesViewModel()
     {
-        CountryName = "France";
-        _ = ToggleCountry();
-        CountryName = "Germany";
-        _ = ToggleCountry();
-        CountryName = "Italy";
-        _ = ToggleCountry();
+        _ = LoadCountries();
     }
 
-    [RelayCommand]
-    private Task ChangeScale(string direction)
+    private async Task LoadCountries()
     {
-        Scale += double.Parse(direction);
-        ResetPositions();
-        return Task.CompletedTask;
+        try
+        {
+            _selectedCountries.Clear();
+            _selectedCountries.AddRange(await _geoDataService.GetAllCountries() ??
+                                        throw new InvalidOperationException());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            RerenderCanvas();
+        }
+    }
+
+    public void ChangeScale(double factor, Point center)
+    {
+        center = new Point(center.X - CanvasWidth / 2.0, center.Y - CanvasHeight / 2.0);
+        Zoom.ScaleX *= factor;
+        Zoom.ScaleY *= factor;
+        Pan.X = center.X - (center.X - Pan.X) * factor;
+        Pan.Y = center.Y - (center.Y - Pan.Y) * factor;
     }
 
     public void PanCanvas(double deltaX, double deltaY)
     {
-        OffsetX += deltaX;
-        OffsetY += deltaY;
-        ResetPositions();
+        Pan.X += deltaX;
+        Pan.Y -= deltaY;
     }
 
     [RelayCommand]
@@ -66,7 +81,8 @@ public partial class MultipleCountriesViewModel : ViewModelBase
             }
             else
             {
-                var countryToRemove = _selectedCountries.Find(c => c.Name.Equals(CountryName, StringComparison.OrdinalIgnoreCase));
+                var countryToRemove =
+                    _selectedCountries.Find(c => c.Name.Equals(CountryName, StringComparison.OrdinalIgnoreCase));
                 if (countryToRemove != null)
                 {
                     _selectedCountries.Remove(countryToRemove);
@@ -83,32 +99,26 @@ public partial class MultipleCountriesViewModel : ViewModelBase
         }
     }
 
-    public void RerenderCanvas()
+    private void RerenderCanvas()
     {
         CountryPolygons.Clear();
 
-        // Calculate offset to center the polygon
-        foreach (var points in _selectedCountries.Select(sc => new List<Point>(from coord in sc.GetPolygonPoints()
-                     let x = coord.X * Scale + OffsetX
-                     let y = CanvasHeight - (coord.Y * Scale + OffsetY)
-                     select new Point(x, y))))
+        foreach (var transformedPoints in from country in _selectedCountries
+                 from polygonPoints in country.GetPolygons()
+                 select polygonPoints
+                     .Select(coord => new Point(
+                         (coord.X + 180) * CanvasWidth / 360,
+                         (coord.Y + 90) * CanvasHeight / 180 * -1 + CanvasHeight
+                     ))
+                     .ToList())
         {
             CountryPolygons.Add(new Polygon
-                { Points = points, Fill = Brushes.LightBlue, Stroke = Brushes.Black, StrokeThickness = 1 });
-        }
-    }
-
-    public void ResetPositions()
-    {
-        for (var i = 0; i < _selectedCountries.Count; i++)
-        {
-            var points = _selectedCountries[i].GetPolygonPoints()
-                .Select(coord => new Point(
-                    coord.X * Scale + OffsetX,
-                    CanvasHeight - (coord.Y * Scale + OffsetY)))
-                .ToList();
-        
-            CountryPolygons[i].Points = points;
+            {
+                Points = transformedPoints,
+                Fill = Brushes.LightBlue,
+                Stroke = Brushes.Black,
+                StrokeThickness = 0.1
+            });
         }
     }
 }

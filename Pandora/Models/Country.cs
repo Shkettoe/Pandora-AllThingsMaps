@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NetTopologySuite.Geometries;
+using Point = Avalonia.Point;
 
 namespace Pandora.Models;
 
@@ -12,20 +13,56 @@ public class Country
     public string Iso3Code { get; set; } = "";
     public Geometry Geometry { get; init; } = null!;
 
-    // Get simple coordinate points for Polygon binding
-    public IReadOnlyList<Avalonia.Point> GetPolygonPoints(double canvasWidth = 100, double canvasHeight = 400)
+    public IReadOnlyList<List<Point>> GetPolygons()
     {
-        var points = new ObservableCollection<Avalonia.Point>();
+        var points = new List<List<Point>>();
 
         // Certain countries are single Polygons as they only encompass single piece of land. Other countries are multi-polygons if they feature - besides the mainlands, some islands or territories overseas.
         switch (Geometry)
         {
             case Polygon polygon:
                 // This will add points to the points var that's being passed, hence why it's a void
-                foreach (var coord in polygon.ExteriorRing.Coordinates )
+                var pointList = polygon.ExteriorRing.Coordinates.Select(coord => new Point(coord.X, coord.Y)).ToList();
+                points.Add(pointList);
+
+                break;
+            case MultiPolygon multiPolygon when multiPolygon.Geometries.Length > 0:
+            {
+                // TODO: check dynamically for other polygons that are big enough and close enough to be significant and render them too. E.g. - Sicily for Italy. False positive e.g. - Greenland for Denmark (pointless to render) 
+                multiPolygon.Geometries
+                    .Cast<Polygon>()
+                    .OrderByDescending(p => p.Area)
+                    .ToList()
+                    .ForEach(p =>
+                        points.Add(p.ExteriorRing.Coordinates.Select(coord => new Point(coord.X, coord.Y)).ToList()));
+                //
+                // foreach (var coord in largestPolygon.ExteriorRing.Coordinates)
+                // {
+                //     points.Add(new Point(coord.X, coord.Y));
+                // }
+
+                break;
+            }
+        }
+
+        return points;
+    }
+
+    // Get simple coordinate points for Polygon binding
+    public IReadOnlyList<Point> GetPolygonPoints()
+    {
+        var points = new ObservableCollection<Point>();
+
+        // Certain countries are single Polygons as they only encompass single piece of land. Other countries are multi-polygons if they feature - besides the mainlands, some islands or territories overseas.
+        switch (Geometry)
+        {
+            case Polygon polygon:
+                // This will add points to the points var that's being passed, hence why it's a void
+                foreach (var coord in polygon.ExteriorRing.Coordinates)
                 {
-                    points.Add(new Avalonia.Point(coord.X, coord.Y));
+                    points.Add(new Point(coord.X, coord.Y));
                 }
+
                 break;
             case MultiPolygon multiPolygon when multiPolygon.Geometries.Length > 0:
             {
@@ -33,11 +70,13 @@ public class Country
                 var largestPolygon = multiPolygon.Geometries
                     .Cast<Polygon>()
                     .OrderByDescending(p => p.Area)
-                    .First();
-                foreach (var coord in largestPolygon.ExteriorRing.Coordinates)
+                    .FirstOrDefault();
+
+                foreach (var coord in largestPolygon!.ExteriorRing.Coordinates)
                 {
-                    points.Add(new Avalonia.Point(coord.X, coord.Y));
+                    points.Add(new Point(coord.X, coord.Y));
                 }
+
                 break;
             }
         }
@@ -48,7 +87,8 @@ public class Country
     /**
      * @deprecated
      */
-    private static void AddPolygonPoints(Polygon polygon, ObservableCollection<Avalonia.Point> points, double canvasWidth, double canvasHeight)
+    private static void AddPolygonPoints(Polygon polygon, ObservableCollection<Point> points,
+        double canvasWidth, double canvasHeight)
     {
         var coordinates = polygon.ExteriorRing.Coordinates;
         if (coordinates.Length == 0) return;
@@ -77,7 +117,7 @@ public class Country
         {
             var x = coord.X * scale + offsetX;
             var y = canvasHeight - (coord.Y * scale + offsetY); // Flip Y axis for screen coordinates
-            points.Add(new Avalonia.Point(x, y));
+            points.Add(new Point(x, y));
         }
     }
 }

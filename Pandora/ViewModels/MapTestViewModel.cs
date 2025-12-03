@@ -46,7 +46,7 @@ public partial class MapTestViewModel : ViewModelBase
             if (SelectedCountry != null)
             {
                 // Get polygon points scaled to canvas
-                var points = SelectedCountry.GetPolygonPoints(CanvasWidth, CanvasHeight);
+                var points = SelectedCountry.GetPolygonPoints();
 
                 // Replace the collection contents
                 CountryPoints.Clear();

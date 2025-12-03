@@ -18,28 +18,21 @@ public partial class MultipleCountriesView : UserControl
         MapCanvas.PointerPressed += OnPointerPressed;
         MapCanvas.PointerMoved += OnPointerMoved;
         MapCanvas.PointerReleased += OnPointerReleased;
-        MapCanvas.PointerWheelChanged += (sender, e) =>
+        MapCanvas.PointerWheelChanged += (_, e) =>
         {
             if (DataContext is not MultipleCountriesViewModel viewModel) return;
-
-            var delta = e.Delta.Y;
+            var posRelativeToCanvas = e.GetPosition(MapCanvas);
+            var posRelativeToBorder = e.GetPosition((Control)MapCanvas.Parent);
+            var posRelativeToControl = e.GetPosition(MapCanvas.Children[0]);
+            // Debug output
+            Console.WriteLine($"Canvas:  ({posRelativeToCanvas.X:F0}, {posRelativeToCanvas.Y:F0})");
+            Console.WriteLine($"Border:  ({posRelativeToBorder.X:F0}, {posRelativeToBorder.Y:F0})");
+            Console.WriteLine($"Control: ({posRelativeToControl.X:F0}, {posRelativeToControl.Y:F0})");
+            Console.WriteLine($"Canvas Size: {MapCanvas.Bounds.Width}x{MapCanvas.Bounds.Height}");
+            Console.WriteLine("---"); var delta = e.Delta.Y;
             var pointerPosition = e.GetPosition(MapCanvas);
-
-            var oldScale = viewModel.Scale;
-            const double minScale = 0.1;
             var zoomFactor = delta > 0 ? 1.1 : 0.9;
-            var newScale = Math.Max(minScale, oldScale * zoomFactor); // Prevent negative scale
-
-            var scaleRatio = newScale / oldScale;
-
-            viewModel.OffsetX = pointerPosition.X - (pointerPosition.X - viewModel.OffsetX) * scaleRatio;
-            
-            // Screen measures height from top down, while canvas measures it from bottom up
-            var invertedPointerY = viewModel.CanvasHeight - pointerPosition.Y;
-            viewModel.OffsetY = invertedPointerY - (invertedPointerY - viewModel.OffsetY) * scaleRatio;
-
-            viewModel.Scale = newScale;
-            viewModel.ResetPositions();
+            viewModel.ChangeScale(zoomFactor, pointerPosition);
         };
     }
 
@@ -52,16 +45,15 @@ public partial class MultipleCountriesView : UserControl
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (!_isDragging) return;
-
+        if (DataContext is not MultipleCountriesViewModel viewModel) return;
         var currentPosition = e.GetPosition(MapCanvas);
+        viewModel.CursorLocation = currentPosition;
+        
+        if (!_isDragging ) return;
+
         var deltaX = currentPosition.X - _lastPosition.X;
         var deltaY = currentPosition.Y - _lastPosition.Y;
-
-        if (DataContext is MultipleCountriesViewModel viewModel)
-        {
-            viewModel.PanCanvas(deltaX, -deltaY);
-        }
+        viewModel.PanCanvas(deltaX, -deltaY);
 
         _lastPosition = currentPosition;
     }

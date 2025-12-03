@@ -16,7 +16,7 @@ public class GeoDataService
 
     private async Task<FeatureCollection> LoadCountries()
     {
-        var assets = AssetLoader.Open(new Uri("avares://Pandora/Data/Core/ne_10m_admin_0_countries.json"));
+        var assets = AssetLoader.Open(new Uri("avares://Pandora/Data/Core/ne_50m_admin_0_countries.json"));
 
         using var reader = new StreamReader(assets);
         var json = await reader.ReadToEndAsync();
@@ -40,7 +40,7 @@ public class GeoDataService
         };
     }
 
-    public async Task<IEnumerable<Country>?> GeoCountriesByContinent(string continent)
+    public async Task<IEnumerable<Country>?> GetCountriesByContinent(string continent)
     {
         var countries = await LoadCountries();
 
@@ -58,6 +58,22 @@ public class GeoDataService
                 Geometry = c.Geometry
             });
         });
+
+        return countriesList;
+    }
+
+    public async Task<IEnumerable<Country>> GetAllCountries()
+    {
+        var countries = await LoadCountries();
+
+        List<Country> countriesList = [];
+
+        countries.ToList().ForEach(c => countriesList.Add(new Country
+        {
+            Name = c.Attributes["NAME"]?.ToString() ?? "",
+            Iso3Code = c.Attributes["ISO_A3"]?.ToString() ?? "",
+            Geometry = c.Geometry
+        }));
 
         return countriesList;
     }
