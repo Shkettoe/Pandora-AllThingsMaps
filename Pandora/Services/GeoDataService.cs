@@ -68,7 +68,7 @@ public class GeoDataService
 
         List<Country> countriesList = [];
 
-        countries.ToList().ForEach(c => countriesList.Add(new Country
+        countries.OrderByDescending(c => c.Geometry.Area).ToList().ForEach(c => countriesList.Add(new Country
         {
             Name = c.Attributes["NAME"]?.ToString() ?? "",
             Iso3Code = c.Attributes["ISO_A3"]?.ToString() ?? "",

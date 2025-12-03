@@ -15,8 +15,21 @@
         <StackPanel Spacing="20" Width="200">
             <TextBox Text="{Binding CountryName}" />
             <Button Command="{Binding ToggleCountryCommand}">Toggle Country</Button>
-            <TextBlock Text="{Binding CursorLocation.X}" />
-            <TextBlock Text="{Binding CursorLocation.Y}" />
+            <TextBlock>
+                <Run Text="{Binding CursorLocation.X}"/>
+                <Run Text=", "/>
+                <Run Text="{Binding CursorLocation.Y}"/>
+            </TextBlock>
+            <TextBlock>
+                <Run Text="{Binding Zoom.ScaleX}"/>
+                <Run Text=", "/>
+                <Run Text="{Binding Zoom.ScaleY}"/>
+            </TextBlock>
+            <TextBlock>
+                <Run Text="{Binding Pan.X}"/>
+                <Run Text=", "/>
+                <Run Text="{Binding Pan.Y}"/>
+            </TextBlock>
         </StackPanel>
         <StackPanel Spacing="30">
             <Canvas Name="MapCanvas" Background="White" ClipToBounds="True" Width="{Binding CanvasWidth}"

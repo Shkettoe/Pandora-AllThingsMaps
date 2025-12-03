@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NetTopologySuite.Geometries;
 using Point = Avalonia.Point;
+using AvPolygon = Avalonia.Controls.Shapes.Polygon;
 
 namespace Pandora.Models;
 
@@ -12,15 +13,38 @@ public class Country
     public string Name { get; set; } = "";
     public string Iso3Code { get; set; } = "";
     public Geometry Geometry { get; init; } = null!;
-
+    
     public IReadOnlyList<List<Point>> GetPolygons()
     {
         var points = new List<List<Point>>();
+
 
         // Certain countries are single Polygons as they only encompass single piece of land. Other countries are multi-polygons if they feature - besides the mainlands, some islands or territories overseas.
         switch (Geometry)
         {
             case Polygon polygon:
+                // If the country is too small, just draw a circle in its location
+                if (Name.Contains("Andorra")) Console.WriteLine($"Polygon {Name}: {Geometry.Area}");
+                const double minArea = 0.05;
+                if (Geometry.Area < minArea)
+                {
+                    var center = Geometry.Centroid;
+                    var radius = minArea * 10 * (1 - Geometry.Area);
+                    var circlePoints = new List<Point>();
+                    const int segments = 20;
+    
+                    for (var i = 0; i < segments; i++)
+                    {
+                        var angle = 2 * Math.PI * i / segments;
+                        circlePoints.Add(new Point(
+                            center.X + radius * Math.Cos(angle),
+                            center.Y + radius * Math.Sin(angle)
+                        ));
+                    }
+                    points.Add(circlePoints);
+                    return points;
+                }
+
                 // This will add points to the points var that's being passed, hence why it's a void
                 var pointList = polygon.ExteriorRing.Coordinates.Select(coord => new Point(coord.X, coord.Y)).ToList();
                 points.Add(pointList);
@@ -28,6 +52,7 @@ public class Country
                 break;
             case MultiPolygon multiPolygon when multiPolygon.Geometries.Length > 0:
             {
+                if (Name.Contains("Andorra")) Console.WriteLine($"Multipolygon {Name}: {Geometry.Area}");
                 // TODO: check dynamically for other polygons that are big enough and close enough to be significant and render them too. E.g. - Sicily for Italy. False positive e.g. - Greenland for Denmark (pointless to render) 
                 multiPolygon.Geometries
                     .Cast<Polygon>()
@@ -35,11 +60,6 @@ public class Country
                     .ToList()
                     .ForEach(p =>
                         points.Add(p.ExteriorRing.Coordinates.Select(coord => new Point(coord.X, coord.Y)).ToList()));
-                //
-                // foreach (var coord in largestPolygon.ExteriorRing.Coordinates)
-                // {
-                //     points.Add(new Point(coord.X, coord.Y));
-                // }
 
                 break;
             }

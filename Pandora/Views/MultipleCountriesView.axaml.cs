@@ -21,15 +21,7 @@ public partial class MultipleCountriesView : UserControl
         MapCanvas.PointerWheelChanged += (_, e) =>
         {
             if (DataContext is not MultipleCountriesViewModel viewModel) return;
-            var posRelativeToCanvas = e.GetPosition(MapCanvas);
-            var posRelativeToBorder = e.GetPosition((Control)MapCanvas.Parent);
-            var posRelativeToControl = e.GetPosition(MapCanvas.Children[0]);
-            // Debug output
-            Console.WriteLine($"Canvas:  ({posRelativeToCanvas.X:F0}, {posRelativeToCanvas.Y:F0})");
-            Console.WriteLine($"Border:  ({posRelativeToBorder.X:F0}, {posRelativeToBorder.Y:F0})");
-            Console.WriteLine($"Control: ({posRelativeToControl.X:F0}, {posRelativeToControl.Y:F0})");
-            Console.WriteLine($"Canvas Size: {MapCanvas.Bounds.Width}x{MapCanvas.Bounds.Height}");
-            Console.WriteLine("---"); var delta = e.Delta.Y;
+            var delta = e.Delta.Y;
             var pointerPosition = e.GetPosition(MapCanvas);
             var zoomFactor = delta > 0 ? 1.1 : 0.9;
             viewModel.ChangeScale(zoomFactor, pointerPosition);

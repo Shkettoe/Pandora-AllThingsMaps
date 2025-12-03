@@ -26,7 +26,7 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 
     [ObservableProperty] private int _canvasWidth = 1000;
     [ObservableProperty] private int _canvasHeight = 500;
-    [ObservableProperty] private TranslateTransform _pan = new(1.0, 1.0);
+    [ObservableProperty] private TranslateTransform _pan = new(0.0, 0.0);
     [ObservableProperty] private ScaleTransform _zoom = new(1.0, 1.0);
 
     [ObservableProperty] private Point _cursorLocation;
@@ -56,17 +56,21 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 
     public void ChangeScale(double factor, Point center)
     {
-        center = new Point(center.X - CanvasWidth / 2.0, center.Y - CanvasHeight / 2.0);
+        var (x, y) = new Point(center.X - CanvasWidth / 2.0, center.Y - CanvasHeight / 2.0);
+        if (Zoom.ScaleX * factor > 200 || Zoom.ScaleY * factor > 200 || Zoom.ScaleX * factor < 1 ||
+            Zoom.ScaleY * factor < 1) return;
         Zoom.ScaleX *= factor;
         Zoom.ScaleY *= factor;
-        Pan.X = center.X - (center.X - Pan.X) * factor;
-        Pan.Y = center.Y - (center.Y - Pan.Y) * factor;
+        Pan.X = x - (x - Pan.X) * factor;
+        Pan.Y = y - (y - Pan.Y) * factor;
     }
 
     public void PanCanvas(double deltaX, double deltaY)
     {
-        Pan.X += deltaX;
-        Pan.Y -= deltaY;
+        if(Math.Abs(Pan.X+deltaX) < (Zoom.ScaleX * CanvasWidth - CanvasWidth) / 2)
+            Pan.X += deltaX;
+        if(Math.Abs(Pan.Y - deltaY) < (Zoom.ScaleY * CanvasHeight - CanvasHeight) / 2)
+            Pan.Y -= deltaY;
     }
 
     [RelayCommand]
