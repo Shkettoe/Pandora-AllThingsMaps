@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -18,11 +19,11 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 {
     private readonly GeoDataService _geoDataService = new();
 
-    // [ObservableProperty]
     private readonly List<Country> _selectedCountries = [];
 
     [ObservableProperty] private string _countryName = string.Empty;
     [ObservableProperty] private ObservableCollection<Polygon> _countryPolygons = [];
+    [ObservableProperty] private ObservableCollection<CountryViewModel> _countries = [];
 
     [ObservableProperty] private int _canvasWidth = 1000;
     [ObservableProperty] private int _canvasHeight = 500;
@@ -43,7 +44,7 @@ public partial class MultipleCountriesViewModel : ViewModelBase
             _selectedCountries.Clear();
             _selectedCountries.AddRange(await _geoDataService.GetAllCountries() ??
                                         throw new InvalidOperationException());
-        }
+        
         catch (Exception e)
         {
             Console.WriteLine(e);
@@ -67,9 +68,9 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 
     public void PanCanvas(double deltaX, double deltaY)
     {
-        if(Math.Abs(Pan.X+deltaX) < (Zoom.ScaleX * CanvasWidth - CanvasWidth) / 2)
+        if (Math.Abs(Pan.X + deltaX) < (Zoom.ScaleX * CanvasWidth - CanvasWidth) / 2)
             Pan.X += deltaX;
-        if(Math.Abs(Pan.Y - deltaY) < (Zoom.ScaleY * CanvasHeight - CanvasHeight) / 2)
+        if (Math.Abs(Pan.Y - deltaY) < (Zoom.ScaleY * CanvasHeight - CanvasHeight) / 2)
             Pan.Y -= deltaY;
     }
 
@@ -105,24 +106,26 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 
     private void RerenderCanvas()
     {
-        CountryPolygons.Clear();
+        Countries.Clear();
 
-        foreach (var transformedPoints in from country in _selectedCountries
-                 from polygonPoints in country.GetPolygons()
-                 select polygonPoints
-                     .Select(coord => new Point(
-                         (coord.X + 180) * CanvasWidth / 360,
-                         (coord.Y + 90) * CanvasHeight / 180 * -1 + CanvasHeight
-                     ))
-                     .ToList())
+        _selectedCountries.ForEach(sc =>
         {
-            CountryPolygons.Add(new Polygon
+            sc.GetPolygons().ToList().ForEach(points =>
             {
-                Points = transformedPoints,
-                Fill = Brushes.LightBlue,
-                Stroke = Brushes.Black,
-                StrokeThickness = 0.1
+                Countries.Add(new CountryViewModel(
+                    sc, new Polygon
+                    {
+                        Points = points.Select(p =>
+                            new Point(
+                                (p.X + 180) * CanvasWidth / 360,
+                                (p.Y + 90) * CanvasHeight / 180 * -1 + CanvasHeight
+                            )).ToList(),
+                        Fill = Brushes.LightSteelBlue,
+                        Stroke = Brushes.Black,
+                        StrokeThickness = 0.1
+                    }
+                ));
             });
-        }
+        });
     }
 }

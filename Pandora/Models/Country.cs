@@ -24,7 +24,6 @@ public class Country
         {
             case Polygon polygon:
                 // If the country is too small, just draw a circle in its location
-                if (Name.Contains("Andorra")) Console.WriteLine($"Polygon {Name}: {Geometry.Area}");
                 const double minArea = 0.05;
                 if (Geometry.Area < minArea)
                 {
@@ -52,7 +51,6 @@ public class Country
                 break;
             case MultiPolygon multiPolygon when multiPolygon.Geometries.Length > 0:
             {
-                if (Name.Contains("Andorra")) Console.WriteLine($"Multipolygon {Name}: {Geometry.Area}");
                 // TODO: check dynamically for other polygons that are big enough and close enough to be significant and render them too. E.g. - Sicily for Italy. False positive e.g. - Greenland for Denmark (pointless to render) 
                 multiPolygon.Geometries
                     .Cast<Polygon>()
