@@ -44,7 +44,7 @@ public partial class MultipleCountriesViewModel : ViewModelBase
             _selectedCountries.Clear();
             _selectedCountries.AddRange(await _geoDataService.GetAllCountries() ??
                                         throw new InvalidOperationException());
-        
+        }
         catch (Exception e)
         {
             Console.WriteLine(e);
