@@ -113,17 +113,11 @@ public partial class MultipleCountriesViewModel : ViewModelBase
             sc.GetPolygons().ToList().ForEach(points =>
             {
                 Countries.Add(new CountryViewModel(
-                    sc, new Polygon
-                    {
-                        Points = points.Select(p =>
-                            new Point(
-                                (p.X + 180) * CanvasWidth / 360,
-                                (p.Y + 90) * CanvasHeight / 180 * -1 + CanvasHeight
-                            )).ToList(),
-                        Fill = Brushes.LightSteelBlue,
-                        Stroke = Brushes.Black,
-                        StrokeThickness = 0.1
-                    }
+                    sc, points.Select(p =>
+                        new Point(
+                            (p.X + 180) * CanvasWidth / 360,
+                            (p.Y + 90) * CanvasHeight / 180 * -1 + CanvasHeight
+                        )).ToList()
                 ));
             });
         });

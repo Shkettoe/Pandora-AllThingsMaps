@@ -51,7 +51,15 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="vm:CountryViewModel">
-                            <ContentControl Content="{Binding Polygon}"/>
+                            <Polygon
+                                Points="{Binding Points}"
+                                Fill="{Binding Colour}"
+                                Stroke="Black"
+                                StrokeThickness="0.1"
+                                PointerPressed="OnPolygonClicked"
+                                />
+                            <!--     <TextBlock Text="{Binding Country.Name}"/> -->
+                            <!-- </Polygon> -->
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
               </ItemsControl>

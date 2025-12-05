@@ -1,6 +1,8 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Pandora.ViewModels;
 
@@ -54,5 +56,13 @@ public partial class MultipleCountriesView : UserControl
     {
         _isDragging = false;
         e.Pointer.Capture(MapCanvas);
+    }
+    
+    private void OnPolygonClicked(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is not Polygon polygon) return;
+        if (polygon.DataContext is not CountryViewModel viewModel) return;
+        viewModel.ClickEventHandlerCommand.Execute(null);
+        e.Handled = true;
     }
 }
