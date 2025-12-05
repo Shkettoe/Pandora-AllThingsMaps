@@ -5,6 +5,7 @@
              xmlns:ic="using:FluentIcons.Avalonia"
              xmlns:vm="clr-namespace:Pandora.ViewModels"
              xmlns:conv="clr-namespace:Pandora.Converters"
+             xmlns:enums="clr-namespace:Pandora.Data.Enums"
              mc:Ignorable="d" d:DesignHeight="720"
              x:Class="Pandora.Views.SidebarView">
 
@@ -22,28 +23,21 @@
             <StackPanel>
                 <TextBlock FontSize="48" FontWeight="Bold" Margin="0 24" HorizontalAlignment="Center"
                            Text="{Binding Pandora}" />
-                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="Home" 
+                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="{x:Static enums:PageNamesEnum.Home}" 
                         Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=Home}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Home" IconVariant="Regular" />
                         <TextBlock Text="Home" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
                     </StackPanel>
                 </Button>
-                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="About"
+                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="{x:Static enums:PageNamesEnum.About}"
                         Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=About}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Info" IconVariant="Regular" />
                         <TextBlock Text="About" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
                     </StackPanel>
                 </Button>
-                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="MapTest"
-                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=MapTest}">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <ic:FluentIcon Icon="Map" IconVariant="Regular" />
-                        <TextBlock Text="Country" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
-                    </StackPanel>
-                </Button>
-                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="MultipleCountries"
+                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="{x:Static enums:PageNamesEnum.MultipleCountries}"
                         Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=MultipleCountries}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Map" IconVariant="Regular" />
@@ -55,7 +49,7 @@
                 <Button Command="{Binding ResizeSidebarCommand}" Width="40" Height="40" HorizontalAlignment="Right">
                     <ic:FluentIcon Icon="{Binding HamburgerIcon}" IconVariant="Regular" />
                 </Button>
-                <Button HorizontalAlignment="Left" Command="{Binding GoToCommand}" CommandParameter="Settings"
+                <Button HorizontalAlignment="Left" Command="{Binding GoToCommand}" CommandParameter="{x:Static enums:PageNamesEnum.Settings}"
                         Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=Settings}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:FluentIcon Icon="Settings" IconVariant="Regular" />

@@ -1,15 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Pandora.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
+public partial class MainViewModel(SidebarViewModel sidebarViewModel) : ViewModelBase
 {
-    [ObservableProperty]
-    private string _greeting = "Welcome to Avalonia nigga!";
-
-    public SidebarViewModel SidebarViewModel { get; } = new SidebarViewModel();
-    public MapTestViewModel MapTestViewModel { get; } = new MapTestViewModel();
-
     
+    public SidebarViewModel SidebarViewModel { get; } = sidebarViewModel;
+
+    [ObservableProperty]
+    private string _greeting = "Welcome to Avalonia UI!";
+    
+    public MainViewModel() : this(new SidebarViewModel()){}
 }

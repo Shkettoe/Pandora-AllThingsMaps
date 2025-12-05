@@ -1,13 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FluentIcons.Common;
-using Pandora.Views;
+using Pandora.Data.Enums;
+using Pandora.Factories;
 
 namespace Pandora.ViewModels;
 
 public partial class SidebarViewModel : ViewModelBase
 {
+    private readonly PageFactory _pageFactory;    
+    
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Pandora), nameof(SideBarWidth), nameof(HamburgerIcon))]
     private bool _hamburger = true;
@@ -19,20 +21,19 @@ public partial class SidebarViewModel : ViewModelBase
     public string HamburgerIcon => Hamburger ? "ChevronLeft" : "ChevronRight";
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CurrentPageName))]
     private ViewModelBase? _selectedViewModel;
 
-    private readonly HomeViewModel _homeViewModel = new();
-    private readonly AboutViewModel _aboutViewModel = new();
-    private readonly MapTestViewModel _mapTestViewModel = new();
-    private readonly MultipleCountriesViewModel _multipleCountriesViewModel = new();
-    private readonly SettingsViewModel _settingsViewModel = new();
-
-    public SidebarViewModel()
+    public SidebarViewModel(PageFactory pageFactory)
     {
-        SelectedViewModel = _homeViewModel;
+        _pageFactory = pageFactory;
+        // Only navigate if not in design mode
+        if (!Design.IsDesignMode)
+        {
+            GoTo(PageNamesEnum.Default);
+        }
     }
-
+    public SidebarViewModel() : this(null!) {}
+    
     [RelayCommand]
     private void ResizeSidebar()
     {
@@ -40,27 +41,8 @@ public partial class SidebarViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void GoTo(string page)
+    private void GoTo(PageNamesEnum page)
     {
-        SelectedViewModel = page switch
-        {
-            "Home" => _homeViewModel,
-            "About" => _aboutViewModel,
-            "MapTest" => _mapTestViewModel,
-            "MultipleCountries" => _multipleCountriesViewModel,
-            "Settings" => _settingsViewModel,
-            _ => _homeViewModel
-        };
+        SelectedViewModel = _pageFactory.Create(page);
     }
-
-    // Current page name for display
-    public string CurrentPageName => SelectedViewModel switch
-    {
-        HomeViewModel => "Home",
-        AboutViewModel => "About",
-        MapTestViewModel => "MapTest",
-        MultipleCountriesViewModel => "MultipleCountries",
-        SettingsViewModel => "Settings",
-        _ => "Home"
-    };
 }

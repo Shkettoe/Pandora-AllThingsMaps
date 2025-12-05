@@ -1,5 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;

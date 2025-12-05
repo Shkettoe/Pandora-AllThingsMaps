@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -22,7 +19,6 @@ public partial class MultipleCountriesViewModel : ViewModelBase
     private readonly List<Country> _selectedCountries = [];
 
     [ObservableProperty] private string _countryName = string.Empty;
-    [ObservableProperty] private ObservableCollection<Polygon> _countryPolygons = [];
     [ObservableProperty] private ObservableCollection<CountryViewModel> _countries = [];
 
     [ObservableProperty] private int _canvasWidth = 1000;

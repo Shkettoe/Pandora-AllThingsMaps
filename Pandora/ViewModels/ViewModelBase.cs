@@ -2,6 +2,4 @@
 
 namespace Pandora.ViewModels;
 
-public partial class ViewModelBase : ObservableObject
-{
-}
+public abstract class ViewModelBase : ObservableObject;
