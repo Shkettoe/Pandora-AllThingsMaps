@@ -1,3 +1,4 @@
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
@@ -59,8 +60,13 @@ public partial class MultipleCountriesView : UserControl
     private void OnPolygonClicked(object? sender, PointerPressedEventArgs e)
     {
         if (sender is not Polygon polygon) return;
-        if (polygon.DataContext is not CountryViewModel viewModel) return;
-        viewModel.ClickEventHandlerCommand.Execute(null);
+        if (polygon.DataContext is not CountryViewModel countryViewModel) return;
+        if (DataContext is not MultipleCountriesViewModel viewModel) return;
+        viewModel.Countries.ToList().ForEach(c =>
+        {
+            if (c.Country.Name == countryViewModel.Country.Name) c.ClickEventHandlerCommand.Execute(null);
+        });
+        viewModel.ClickedCountryName = countryViewModel.Country.Name;
         e.Handled = true;
     }
 }

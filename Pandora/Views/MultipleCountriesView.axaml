@@ -30,6 +30,7 @@
                 <Run Text=", " />
                 <Run Text="{Binding Pan.Y}" />
             </TextBlock>
+            <TextBlock Text="{Binding ClickedCountryName}"/>
         </StackPanel>
         <StackPanel Spacing="30">
             <Canvas Name="MapCanvas" Background="White" ClipToBounds="True" Width="{Binding CanvasWidth}"

@@ -20,6 +20,7 @@ public partial class MultipleCountriesViewModel : ViewModelBase
 
     [ObservableProperty] private string _countryName = string.Empty;
     [ObservableProperty] private ObservableCollection<CountryViewModel> _countries = [];
+    [ObservableProperty] private string _clickedCountryName = "Click any country";
 
     [ObservableProperty] private int _canvasWidth = 1000;
     [ObservableProperty] private int _canvasHeight = 500;
