@@ -14,7 +14,7 @@ namespace Pandora.ViewModels;
 
 public partial class MultipleCountriesViewModel : ViewModelBase
 {
-    private readonly GeoDataService _geoDataService = new();
+    private readonly LegacyGeoDataService _legacyGeoDataService = new();
 
     private readonly List<Country> _selectedCountries = [];
 
@@ -39,7 +39,7 @@ public partial class MultipleCountriesViewModel : ViewModelBase
         try
         {
             _selectedCountries.Clear();
-            _selectedCountries.AddRange(await _geoDataService.GetAllCountries() ??
+            _selectedCountries.AddRange(await _legacyGeoDataService.GetAllCountries() ??
                                         throw new InvalidOperationException());
         }
         catch (Exception e)
@@ -78,7 +78,7 @@ public partial class MultipleCountriesViewModel : ViewModelBase
         {
             if (!_selectedCountries.Exists(c => c.Name.Equals(CountryName, StringComparison.OrdinalIgnoreCase)))
             {
-                var country = await _geoDataService.GetCountry(CountryName);
+                var country = await _legacyGeoDataService.GetCountry(CountryName);
                 if (country != null) _selectedCountries.Add(country);
             }
             else

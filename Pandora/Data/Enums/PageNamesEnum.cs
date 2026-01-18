@@ -6,5 +6,6 @@ public enum PageNamesEnum
     Home,
     About,
     MultipleCountries,
+    Editor,
     Settings
 }

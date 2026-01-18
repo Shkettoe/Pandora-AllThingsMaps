@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Pandora.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Pandora.Views.EditorView"
+             x:DataType="vm:EditorViewModel">
+    <Design.DataContext>
+        <vm:EditorViewModel />
+    </Design.DataContext>
+    <StackPanel>
+        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, *">
+            <ListBox ItemsSource="{Binding Folders}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ListBoxItem PointerPressed="InputElement_OnPointerPressed" Content="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <!-- <ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Features}"> -->
+            <!--     <ListBox.ItemTemplate> -->
+            <!--         <DataTemplate> -->
+            <!--             <ListBoxItem> -->
+            <!--                 <ItemsControl ItemsSource="{Binding Attributes}"> -->
+            <!--                     <ItemsControl.ItemTemplate> -->
+            <!--                         <DataTemplate> -->
+            <!--                         </DataTemplate> -->
+            <!--                     </ItemsControl.ItemTemplate> -->
+            <!--                 </ItemsControl> -->
+            <!--             </ListBoxItem> -->
+            <!--         </DataTemplate> -->
+            <!--     </ListBox.ItemTemplate> -->
+            <!-- </ListBox> -->
+            <DataGrid Grid.Row="0" Grid.Column="1" Name="AttributeGrid" />
+        </Grid>       
+    </StackPanel>
+</UserControl>

@@ -20,7 +20,10 @@
                        DataContext="{Binding SidebarViewModel}" />
         <Panel Grid.Column="1">
             <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <ContentControl Content="{Binding SidebarViewModel.SelectedViewModel}"/>
+            <!-- <ContentControl Content="{Binding SidebarViewModel.SelectedViewModel}"/> -->
+            <Grid>
+                <DataGrid x:Name="AttributeGrid"/>
+            </Grid>
         </Panel>
     </Grid>
 </Window>

@@ -26,6 +26,7 @@ public partial class App : Application
         collection.AddTransient<AboutViewModel>();
         collection.AddTransient<HomeViewModel>();
         collection.AddTransient<MultipleCountriesViewModel>();
+        collection.AddTransient<EditorViewModel>();
         collection.AddTransient<SettingsViewModel>();
         collection.AddSingleton<Func<PageNamesEnum, ViewModelBase>>(x => name => 
         name switch
@@ -33,6 +34,7 @@ public partial class App : Application
             PageNamesEnum.Home => x.GetRequiredService<HomeViewModel>(),
             PageNamesEnum.About => x.GetRequiredService<AboutViewModel>(),
             PageNamesEnum.MultipleCountries => x.GetRequiredService<MultipleCountriesViewModel>(),
+            PageNamesEnum.Editor => x.GetRequiredService<EditorViewModel>(),
             PageNamesEnum.Default => x.GetRequiredService<HomeViewModel>(),
             PageNamesEnum.Settings => x.GetRequiredService<SettingsViewModel>(),
             _ => throw new ArgumentOutOfRangeException(nameof(name), name, null)

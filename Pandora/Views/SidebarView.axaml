@@ -44,6 +44,13 @@
                         <TextBlock Text="Countries" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
                     </StackPanel>
                 </Button>
+                <Button Height="48" Command="{Binding GoToCommand}" CommandParameter="{x:Static enums:PageNamesEnum.Editor}"
+                        Classes.active="{Binding SelectedViewModel, Converter={StaticResource ActiveButtonConverter}, ConverterParameter=Editor}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ic:FluentIcon Icon="Edit" IconVariant="Regular" />
+                        <TextBlock Text="Editor" VerticalAlignment="Center" IsVisible="{Binding Hamburger}" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Vertical" Spacing="48">
                 <Button Command="{Binding ResizeSidebarCommand}" Width="40" Height="40" HorizontalAlignment="Right">

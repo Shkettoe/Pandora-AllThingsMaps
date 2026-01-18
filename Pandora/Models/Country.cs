@@ -4,13 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NetTopologySuite.Geometries;
 using Point = Avalonia.Point;
-using AvPolygon = Avalonia.Controls.Shapes.Polygon;
 
 namespace Pandora.Models;
 
 public class Country
 {
-    public string Name { get; set; } = "";
+    public string Name { get; init; } = "";
     public string Iso3Code { get; set; } = "";
     public Geometry Geometry { get; init; } = null!;
     
