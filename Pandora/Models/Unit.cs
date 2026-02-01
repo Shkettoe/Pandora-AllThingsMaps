@@ -45,7 +45,8 @@ public class Unit(string key, string name, Geometry geometry)
                 */
 
                 // This will add points to the points var that's being passed, hence why it's a void
-                var pointList = polygon.ExteriorRing.Coordinates.Select(coord => new Point(coord.X, coord.Y)).ToList();
+                var pointList = polygon.ExteriorRing.Coordinates
+                    .Select(coord => new Point(coord.X + 180, 180 - (coord.Y + 90))).ToList();
                 points.Add(pointList);
 
                 break;
@@ -56,7 +57,8 @@ public class Unit(string key, string name, Geometry geometry)
                     .OrderByDescending(p => p.Area)
                     .ToList()
                     .ForEach(p =>
-                        points.Add(p.ExteriorRing.Coordinates.Select(coord => new Point(coord.X, coord.Y)).ToList()));
+                        points.Add(p.ExteriorRing.Coordinates.Select(coord => new Point(coord.X + 180, 180 - (coord.Y + 90)))
+                            .ToList()));
 
                 break;
             }

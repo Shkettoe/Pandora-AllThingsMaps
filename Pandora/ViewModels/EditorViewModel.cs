@@ -81,23 +81,26 @@ public partial class EditorViewModel : ViewModelBase
             unit.GetPolygons().ToList().Max(points => points.ToList().Max(point => point.Y))
         );
         var minX = units.Min(unit =>
-            unit.GetPolygons().Min(points => points.ToList().Min(point => point.X))
+            unit.GetPolygons().ToList().Min(points => points.ToList().Min(point => point.X))
         );
         var minY = units.Min(unit =>
-            unit.GetPolygons().Min(points => points.ToList().Min(point => point.Y))
+            unit.GetPolygons().ToList().Min(points => points.ToList().Min(point => point.Y))
         );
-        var scale = Math.Min((CanvasWidth / (maxX - minX)), CanvasHeight / (maxY - minY));
-        var ratio = Math.Min(CanvasWidth, CanvasHeight);
+
+        var width = maxX + (maxX - (maxX - minX));
+        var height = maxY + (maxY - (maxY - minY));
+
+        var scale = Math.Min(CanvasWidth, CanvasHeight) / Math.Min((maxX-minX),(maxY-minY)) / 1.3;
         units.ForEach(unit =>
         {
             unit.GetPolygons().ToList().ForEach(points =>
             {
                 Units.Add(new UnitViewModel(
-                    unit, points.Select(p => new Avalonia.Point(
-                        (p.X + 180) * ratio / 360,
-                        (p.Y + 90) * ratio / 180 * -1 + ratio
-                    )).ToList()));
+                    unit, points.Select(p => new Avalonia.Point(p.X, p.Y)).ToList()));
             });
         });
+        CanvasZoom = new ScaleTransform(scale, scale);
+        CanvasPan = new TranslateTransform((CanvasWidth / 2 - width / 2) * scale,
+            (CanvasHeight / 2 - height / 2) * scale);
     }
 }
