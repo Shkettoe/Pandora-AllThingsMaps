@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Diagnostics;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
+using Pandora.Config;
 using Pandora.Data.Enums;
 using Pandora.Factories;
 using Pandora.ViewModels;
@@ -17,6 +18,7 @@ public partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
         this.AttachDevTools(new DevToolsOptions());
+        AppEnvironment.SetFolder();
     }
 
     public override void OnFrameworkInitializationCompleted()

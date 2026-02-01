@@ -5,11 +5,11 @@ using NetTopologySuite.Geometries;
 namespace Pandora.Models;
 
 // Unit of a quiz.
-public class Unit
+public class Unit(string key, string name, Geometry geometry)
 {
-    public string Key { get; set; }
-    public string Name { get; set; }
-    public Geometry Geometry { get; set; }
+    public string Key { get; set; } = key;
+    public string Name { get; set; } = name;
+    private Geometry Geometry { get; set; } = geometry;
 
     public IReadOnlyList<List<Point>> GetPolygons()
     {

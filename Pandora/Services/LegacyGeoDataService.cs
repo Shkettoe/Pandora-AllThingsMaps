@@ -34,8 +34,8 @@ public class LegacyGeoDataService
 
         return new Country
         {
-            Name = country.Attributes["NAME"]?.ToString() ?? "",
-            Iso3Code = country.Attributes["ISO_A3"]?.ToString() ?? "",
+            Name = "",
+            Iso3Code = "",
             Geometry = country.Geometry
         };
     }
@@ -53,8 +53,8 @@ public class LegacyGeoDataService
         {
             countriesList.Add(new Country
             {
-                Name = c.Attributes["NAME"]?.ToString() ?? "",
-                Iso3Code = c.Attributes["ISO_A3"]?.ToString() ?? "",
+                Name = "",
+                Iso3Code = "",
                 Geometry = c.Geometry
             });
         });
@@ -70,8 +70,8 @@ public class LegacyGeoDataService
 
         countries.OrderByDescending(c => c.Geometry.Area).ToList().ForEach(c => countriesList.Add(new Country
         {
-            Name = c.Attributes["NAME"]?.ToString() ?? "",
-            Iso3Code = c.Attributes["ISO_A3"]?.ToString() ?? "",
+            Name = "",
+            Iso3Code = "",
             Geometry = c.Geometry
         }));
 

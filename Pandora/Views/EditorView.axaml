@@ -9,30 +9,70 @@
     <Design.DataContext>
         <vm:EditorViewModel />
     </Design.DataContext>
-    <StackPanel>
-        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, *">
-            <ListBox ItemsSource="{Binding Folders}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <ListBoxItem PointerPressed="InputElement_OnPointerPressed" Content="{Binding}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <!-- <ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Features}"> -->
-            <!--     <ListBox.ItemTemplate> -->
-            <!--         <DataTemplate> -->
-            <!--             <ListBoxItem> -->
-            <!--                 <ItemsControl ItemsSource="{Binding Attributes}"> -->
-            <!--                     <ItemsControl.ItemTemplate> -->
-            <!--                         <DataTemplate> -->
-            <!--                         </DataTemplate> -->
-            <!--                     </ItemsControl.ItemTemplate> -->
-            <!--                 </ItemsControl> -->
-            <!--             </ListBoxItem> -->
-            <!--         </DataTemplate> -->
-            <!--     </ListBox.ItemTemplate> -->
-            <!-- </ListBox> -->
-            <DataGrid Grid.Row="0" Grid.Column="1" Name="AttributeGrid" />
-        </Grid>       
+    <StackPanel Spacing="12">
+        <Grid Margin="12" ShowGridLines="True" ColumnDefinitions="200, *" RowDefinitions="Auto, *">
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <ComboBox SelectionChanged="SelectingItemsControl_OnSelectionChanged"
+                          SelectedItem="{Binding SelectedFolder}" SelectedIndex="0" ItemsSource="{Binding Folders}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <ComboBoxItem Content="{Binding}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ComboBox SelectedItem="{Binding SelectedAttribute}" SelectedIndex="0"
+                          ItemsSource="{Binding Attributes}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <ComboBoxItem Content="{Binding}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Text="{Binding SelectedAttribute}" />
+                <Button Command="{Binding LoadUnitsCommand}">Load</Button>
+                
+                <TextBox Text="{Binding CanvasWidth}" />
+                <TextBox Text="{Binding CanvasHeight}"/>
+                <TextBox Text="{Binding CanvasPan.X}" />
+                <TextBox Text="{Binding CanvasPan.Y}"/>
+                <TextBox Text="{Binding CanvasZoom.ScaleX}" />
+                <TextBox Text="{Binding CanvasZoom.ScaleY}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <Canvas ClipToBounds="False"
+                        Width="{Binding CanvasWidth}"
+                        Height="{Binding CanvasHeight}"
+                        Background="White">
+                    <ItemsControl
+                        Width="{Binding CanvasWidth}"
+                        Height="{Binding CanvasHeight}"
+                        ItemsSource="{Binding Units}">
+                        <ItemsControl.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform
+                                    ScaleX="{Binding CanvasZoom.ScaleX}"
+                                    ScaleY="{Binding CanvasZoom.ScaleY}" />
+                                <TranslateTransform X="{Binding CanvasPan.X}" Y="{Binding CanvasPan.Y}" />
+                            </TransformGroup>
+                        </ItemsControl.RenderTransform>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:UnitViewModel">
+                                <Polygon
+                                    Points="{Binding Points}"
+                                    Fill="{Binding Colour}"
+                                    Stroke="Black"
+                                    StrokeThickness="0.1"
+                                    />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Canvas>
+            </StackPanel>
+        </Grid>
     </StackPanel>
 </UserControl>

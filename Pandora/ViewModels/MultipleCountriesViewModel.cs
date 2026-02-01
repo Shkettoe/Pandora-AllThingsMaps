@@ -22,8 +22,8 @@ public partial class MultipleCountriesViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<CountryViewModel> _countries = [];
     [ObservableProperty] private string _clickedCountryName = "Click any country";
 
-    [ObservableProperty] private int _canvasWidth = 1000;
-    [ObservableProperty] private int _canvasHeight = 500;
+    [ObservableProperty] private int _canvasWidth = 1600;
+    [ObservableProperty] private int _canvasHeight = 800;
     [ObservableProperty] private TranslateTransform _pan = new(0.0, 0.0);
     [ObservableProperty] private ScaleTransform _zoom = new(1.0, 1.0);
 
@@ -105,6 +105,7 @@ public partial class MultipleCountriesViewModel : ViewModelBase
     {
         Countries.Clear();
 
+        var ratio = Math.Min(CanvasHeight, CanvasWidth);
         _selectedCountries.ForEach(sc =>
         {
             sc.GetPolygons().ToList().ForEach(points =>
@@ -112,8 +113,8 @@ public partial class MultipleCountriesViewModel : ViewModelBase
                 Countries.Add(new CountryViewModel(
                     sc, points.Select(p =>
                         new Point(
-                            (p.X + 180) * CanvasWidth / 360,
-                            (p.Y + 90) * CanvasHeight / 180 * -1 + CanvasHeight
+                            (p.X + 180) * ratio / 360,
+                            (p.Y + 90) * ratio / 180 * -1 + ratio
                         )).ToList()
                 ));
             });

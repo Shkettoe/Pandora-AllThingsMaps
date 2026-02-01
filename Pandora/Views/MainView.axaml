@@ -1,16 +1,16 @@
 <Window xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:Pandora.ViewModels"
-             xmlns:v="clr-namespace:Pandora.Views"
-             mc:Ignorable="d"
-             d:DesignWidth="1280"
-             d:DesignHeight="720"
-             Width="1280"
-             Height="720"
-             x:Class="Pandora.Views.MainView"
-             x:DataType="vm:MainViewModel">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Pandora.ViewModels"
+        xmlns:v="clr-namespace:Pandora.Views"
+        mc:Ignorable="d"
+        d:DesignWidth="1280"
+        d:DesignHeight="720"
+        Width="1280"
+        Height="720"
+        x:Class="Pandora.Views.MainView"
+        x:DataType="vm:MainViewModel">
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
@@ -20,10 +20,7 @@
                        DataContext="{Binding SidebarViewModel}" />
         <Panel Grid.Column="1">
             <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <!-- <ContentControl Content="{Binding SidebarViewModel.SelectedViewModel}"/> -->
-            <Grid>
-                <DataGrid x:Name="AttributeGrid"/>
-            </Grid>
+            <ContentControl Content="{Binding SidebarViewModel.SelectedViewModel}" />
         </Panel>
     </Grid>
 </Window>

@@ -11,7 +11,7 @@
         <vm:MultipleCountriesViewModel />
     </Design.DataContext>
 
-    <StackPanel Margin="50" Orientation="Horizontal" Spacing="20">
+    <StackPanel Margin="50" Orientation="Vertical" Spacing="10">
         <StackPanel Spacing="20" Width="200">
             <TextBox Text="{Binding CountryName}" />
             <Button Command="{Binding ToggleCountryCommand}">Toggle Country</Button>
@@ -30,12 +30,12 @@
                 <Run Text=", " />
                 <Run Text="{Binding Pan.Y}" />
             </TextBlock>
-            <TextBlock Text="{Binding ClickedCountryName}"/>
+            <TextBlock Text="{Binding ClickedCountryName}" />
         </StackPanel>
-        <StackPanel Spacing="30">
+        <StackPanel Spacing="15">
             <Canvas Name="MapCanvas" Background="White" ClipToBounds="True" Width="{Binding CanvasWidth}"
                     Height="{Binding CanvasHeight}">
-                <ItemsControl Name="MapControl" Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}"
+                <ItemsControl Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}"
                               ItemsSource="{Binding Countries}">
                     <ItemsControl.RenderTransform>
                         <TransformGroup>
@@ -57,13 +57,12 @@
                                 Fill="{Binding Colour}"
                                 Stroke="Black"
                                 StrokeThickness="0.1"
-                                PointerPressed="OnPolygonClicked"
-                                />
+                                PointerPressed="OnPolygonClicked" />
                             <!--     <TextBlock Text="{Binding Country.Name}"/> -->
                             <!-- </Polygon> -->
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
-              </ItemsControl>
+                </ItemsControl>
             </Canvas>
         </StackPanel>
     </StackPanel>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
@@ -15,11 +16,11 @@ public partial class EditorView : UserControl
     public EditorView()
     {
         InitializeComponent();
-   }
+    }
 
-    private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (DataContext is not EditorViewModel vm) return;
-        if(sender is ListBoxItem listBoxItem) vm.LoadSelectedFileCommand.Execute(listBoxItem.Content);
+        vm.LoadSelectedFileCommand.Execute(null);
     }
 }
